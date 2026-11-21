@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <rect width="100" height="100" rx="20" fill="#171717"/>
+  <circle cx="50" cy="50" r="38" stroke="#F3EBDD" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <path d="M50 20 L53 35 L68 38 L56 47 L60 62 L50 52 L40 62 L44 47 L32 38 L47 35 Z" fill="#C5A059" opacity="0.3"/>
+  <text x="50" y="58" font-family="'Playfair Display', serif" font-size="28" font-weight="700" fill="#F3EBDD" text-anchor="middle" letter-spacing="1">KA</text>
+  <circle cx="50" cy="74" r="2" fill="#C5A059"/>
+</svg>
