@@ -65,6 +65,45 @@ export default function App() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [wifiModalOpen, setWifiModalOpen] = useState(false);
   const [copiedSSID, setCopiedSSID] = useState(false);
+  const [wifiToast, setWifiToast] = useState(false);
+
+  // 1-Tap Direct Trigger for Wi-Fi Connection
+  const handleWifiConnect = () => {
+    // 1. Auto-copy network name to clipboard
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText('KASHI ANUPAM');
+      }
+    } catch (e) {
+      console.warn('Clipboard write failed', e);
+    }
+
+    setCopiedSSID(true);
+    setWifiToast(true);
+
+    // 2. Detect Android environment
+    const isAndroid = /Android/i.test(navigator.userAgent);
+
+    if (isAndroid) {
+      // 1-Tap Direct Trigger: Open native Android Wi-Fi settings page
+      window.location.href = "intent:#Intent;action=android.settings.WIFI_SETTINGS;end";
+
+      // Fallback in case in-app webview intercepts the intent
+      setTimeout(() => {
+        if (document.visibilityState === 'visible') {
+          setWifiModalOpen(true);
+        }
+      }, 1500);
+    } else {
+      // For iOS / Desktop preview, show the luxury QR & connection sheet
+      setWifiModalOpen(true);
+    }
+
+    setTimeout(() => {
+      setCopiedSSID(false);
+      setWifiToast(false);
+    }, 4500);
+  };
 
   return (
     <div className="min-h-screen bg-[#ECE4D5] flex items-center justify-center p-0 sm:py-6 selection:bg-[#171717] selection:text-[#F3EBDD]">
@@ -205,12 +244,12 @@ export default function App() {
             </div>
           </a>
 
-          {/* HOTEL WI-FI - Interactive Connect & QR Access */}
+          {/* HOTEL WI-FI - 1-Tap Direct Trigger & Auto-Copy */}
           <button
             type="button"
-            onClick={() => setWifiModalOpen(true)}
+            onClick={handleWifiConnect}
             className="group relative flex items-center justify-between w-full h-[60px] px-5 rounded-2xl bg-[#171717] text-[#F3EBDD] shadow-luxury tap-luxury hover:bg-[#232323] hover:shadow-luxury-lg border border-[#303030] text-left cursor-pointer"
-            aria-label="Connect to Kashi Anupam Hotel Guest Wi-Fi"
+            aria-label="1-Tap Connect to Kashi Anupam Hotel Guest Wi-Fi"
           >
             {/* Subtle luxury glow border */}
             <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-[#C5A059]/40 via-transparent to-[#C5A059]/40 opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -224,8 +263,8 @@ export default function App() {
                   <span className="font-sans font-bold text-[14px] tracking-wider text-[#F3EBDD] uppercase">
                     HOTEL WI-FI
                   </span>
-                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#C5A059] text-[#171717] uppercase tracking-wider">
-                    Free Access
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#C5A059] text-[#171717] uppercase tracking-wider animate-pulse">
+                    1-Tap Connect
                   </span>
                 </div>
                 <p className="text-[12px] text-[#F3EBDD]/70 tracking-tight mt-0.5">
@@ -234,10 +273,18 @@ export default function App() {
               </div>
             </div>
 
-            <div className="z-10 flex items-center">
-              <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#C5A059]/20 transition-colors">
+            <div className="z-10 flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setWifiModalOpen(true);
+                }}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-[#C5A059]/30 flex items-center justify-center transition-colors cursor-pointer"
+                title="View QR Code"
+              >
                 <QrCodeIcon className="w-4 h-4 text-[#F3EBDD]" />
-              </div>
+              </button>
             </div>
           </button>
 
@@ -514,6 +561,19 @@ export default function App() {
             >
               Done / Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Luxury Toast for 1-Tap Wi-Fi Trigger */}
+      {wifiToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-[380px] bg-[#171717] text-[#F3EBDD] px-4 py-3 rounded-2xl shadow-2xl border border-[#C5A059]/50 flex items-center gap-3 animate-fade-in pointer-events-none">
+          <div className="w-8 h-8 rounded-xl bg-[#282828] text-[#68e096] flex items-center justify-center flex-shrink-0 font-bold text-sm">
+            ✓
+          </div>
+          <div className="text-left text-xs leading-tight">
+            <p className="font-bold text-[#F3EBDD]">Network 'KASHI ANUPAM' Copied!</p>
+            <p className="text-[#F3EBDD]/70 text-[11px] mt-0.5">Opening Wi-Fi Settings...</p>
           </div>
         </div>
       )}
