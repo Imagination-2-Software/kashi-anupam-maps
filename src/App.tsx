@@ -36,6 +36,24 @@ const MapPinIcon = ({ className = "w-5 h-5 flex-shrink-0" }: { className?: strin
   </svg>
 );
 
+const WifiIcon = ({ className = "w-5 h-5 flex-shrink-0" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+    <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+    <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+    <line x1="12" y1="20" x2="12.01" y2="20" strokeWidth="3" strokeLinecap="round" />
+  </svg>
+);
+
+const QrCodeIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+  </svg>
+);
+
 const ArrowUpRightIcon = () => (
   <svg className="w-4 h-4 opacity-60 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-active:translate-x-0.5 group-active:-translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="7" y1="17" x2="17" y2="7" />
@@ -45,6 +63,8 @@ const ArrowUpRightIcon = () => (
 
 export default function App() {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [wifiModalOpen, setWifiModalOpen] = useState(false);
+  const [copiedSSID, setCopiedSSID] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#ECE4D5] flex items-center justify-center p-0 sm:py-6 selection:bg-[#171717] selection:text-[#F3EBDD]">
@@ -184,6 +204,42 @@ export default function App() {
               </div>
             </div>
           </a>
+
+          {/* HOTEL WI-FI - Interactive Connect & QR Access */}
+          <button
+            type="button"
+            onClick={() => setWifiModalOpen(true)}
+            className="group relative flex items-center justify-between w-full h-[60px] px-5 rounded-2xl bg-[#171717] text-[#F3EBDD] shadow-luxury tap-luxury hover:bg-[#232323] hover:shadow-luxury-lg border border-[#303030] text-left cursor-pointer"
+            aria-label="Connect to Kashi Anupam Hotel Guest Wi-Fi"
+          >
+            {/* Subtle luxury glow border */}
+            <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-[#C5A059]/40 via-transparent to-[#C5A059]/40 opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
+
+            <div className="flex items-center gap-3.5 z-10">
+              <div className="w-10 h-10 rounded-xl bg-[#282828] border border-white/10 flex items-center justify-center text-[#F3EBDD] group-hover:text-[#C5A059] transition-colors">
+                <WifiIcon />
+              </div>
+              <div className="text-left">
+                <div className="flex items-center gap-2">
+                  <span className="font-sans font-bold text-[14px] tracking-wider text-[#F3EBDD] uppercase">
+                    HOTEL WI-FI
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-[#C5A059] text-[#171717] uppercase tracking-wider">
+                    Free Access
+                  </span>
+                </div>
+                <p className="text-[12px] text-[#F3EBDD]/70 tracking-tight mt-0.5">
+                  SSID: KASHI ANUPAM • Tap to Connect
+                </p>
+              </div>
+            </div>
+
+            <div className="z-10 flex items-center">
+              <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#C5A059]/20 transition-colors">
+                <QrCodeIcon className="w-4 h-4 text-[#F3EBDD]" />
+              </div>
+            </div>
+          </button>
 
           {/* 1. CALL NOW - Primary Prominent Action */}
           <a
@@ -343,6 +399,124 @@ export default function App() {
           }}
         />
       </main>
+
+      {/* Luxury Wi-Fi Connect Modal / Bottom Sheet */}
+      {wifiModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/65 backdrop-blur-xs p-0 sm:p-4 animate-fade-in"
+          onClick={() => setWifiModalOpen(false)}
+        >
+          <div 
+            className="w-full max-w-[430px] bg-[#FAF6EE] rounded-t-[32px] sm:rounded-3xl p-6 shadow-2xl border border-[#E3D7C5] relative text-[#171717] max-h-[92vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Sheet Handle */}
+            <div className="w-12 h-1.5 bg-[#171717]/20 rounded-full mx-auto mb-4 sm:hidden" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3.5 border-b border-[#171717]/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#171717] text-[#F3EBDD] flex items-center justify-center shadow-sm">
+                  <WifiIcon className="w-5 h-5 text-[#C5A059]" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#171717] leading-tight">
+                    Hotel Guest Wi-Fi
+                  </h3>
+                  <p className="text-[11px] text-[#171717]/65 font-sans mt-0.5">
+                    Complimentary High-Speed Internet
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setWifiModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-[#171717]/5 hover:bg-[#171717]/15 flex items-center justify-center text-[#171717] text-sm font-bold transition-colors cursor-pointer"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* QR Code Container */}
+            <div className="my-5 flex flex-col items-center text-center">
+              <div className="p-3.5 bg-white rounded-2xl border-2 border-[#C5A059]/40 shadow-luxury relative group">
+                <img 
+                  src="/hotel-wifi-qr.jpeg" 
+                  alt="Kashi Anupam Hotel Wi-Fi QR Code" 
+                  className="w-48 h-48 object-contain rounded-lg"
+                />
+                <div className="mt-2.5 text-[11px] font-medium text-[#171717]/75 flex items-center justify-center gap-1">
+                  <span>📷 Scan with Camera / Lens to Connect</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Network Credentials Box */}
+            <div className="bg-[#EFE7D8] rounded-2xl p-4 border border-[#E3D7C5] space-y-2.5 mb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="block text-[10px] uppercase tracking-wider text-[#171717]/60 font-semibold">Network Name (SSID)</span>
+                  <span className="font-sans font-bold text-[15px] text-[#171717] tracking-tight">KASHI ANUPAM</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText('KASHI ANUPAM');
+                    setCopiedSSID(true);
+                    setTimeout(() => setCopiedSSID(false), 2000);
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-[#171717] text-[#F3EBDD] text-xs font-semibold hover:bg-[#303030] transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-xs"
+                >
+                  {copiedSSID ? (
+                    <>
+                      <span className="text-[#68e096]">✓</span>
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>📋</span>
+                      <span>Copy Name</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="pt-2 border-t border-[#171717]/10 flex items-center justify-between text-xs">
+                <span className="text-[11.5px] text-[#171717]/70 font-medium">Password / Security</span>
+                <span className="font-semibold text-[#171717] bg-[#FAF6EE] px-2.5 py-0.5 rounded-md text-[11px] border border-[#171717]/10">
+                  Open / No Password
+                </span>
+              </div>
+            </div>
+
+            {/* How to Connect instructions */}
+            <div className="bg-[#FAF6EE] rounded-xl p-3.5 border border-[#E3D7C5]/70 text-[11.5px] text-[#171717]/80 space-y-2 mb-4">
+              <p className="font-semibold text-[#171717] text-[12px] flex items-center gap-1.5">
+                <span className="text-[#C5A059]">✦</span> Quick Connection Guide:
+              </p>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded-full bg-[#171717] text-[#F3EBDD] text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                <span>Phone ke <strong>Camera / Google Lens</strong> se upar diya <strong>QR Scan</strong> karein.</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="w-4 h-4 rounded-full bg-[#171717] text-[#F3EBDD] text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                <span>Ya phone ki Wi-Fi settings me <strong>"KASHI ANUPAM"</strong> choose karke connect ho jayein.</span>
+              </div>
+            </div>
+
+            {/* Done Button */}
+            <button
+              type="button"
+              onClick={() => setWifiModalOpen(false)}
+              className="w-full py-3.5 rounded-xl bg-[#171717] text-[#F3EBDD] font-sans font-bold text-xs uppercase tracking-wider hover:bg-[#252525] active:scale-[0.98] transition-all cursor-pointer shadow-luxury"
+            >
+              Done / Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
